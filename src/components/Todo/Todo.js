@@ -1,12 +1,15 @@
 import Button from "../Button";
-import TodoApis from "../../helpers/commonApis/todoListApi.js";
+import useUpdateApi from "../../hooks/useUpdateApi";
+import useDeleteApi from "../../hooks/useDeleteApi";
 
-const Todo = ({ todo, setTodos }) => {
+const Todo = ({ todo, setTaskList }) => {
+  const { updateTask } = useUpdateApi();
+  const { deleteTask } = useDeleteApi();
   const handleCompleteTodo = async (id) => {
     try {
-      const res = await TodoApis.updateComplete(id);
+      const res = await updateTask("/todos/updateComplete", id);
       const { data } = res.data;
-      setTodos([...data]);
+      setTaskList([...data] || []);
     } catch (error) {
       console.log(error);
     }
@@ -15,9 +18,9 @@ const Todo = ({ todo, setTodos }) => {
   const handleUndoTodo = async (id) => {
     try {
       if (todo.isCompleted === false) return;
-      const res = await TodoApis.undoComplete(id);
+      const res = await updateTask("/todos/undoComplete", id);
       const { data } = res.data;
-      setTodos([...data]);
+      setTaskList([...data] || []);
     } catch (error) {
       console.log(error);
     }
@@ -25,9 +28,9 @@ const Todo = ({ todo, setTodos }) => {
 
   const handleRemoveTodo = async (id) => {
     try {
-      const res = await TodoApis.removeTodos(id);
+      const res = await deleteTask("/todos/deleteTodo", id);
       const { data } = res.data;
-      setTodos([...data]);
+      setTaskList([...data] || []);
     } catch (error) {
       console.log(error);
     }

@@ -1,20 +1,21 @@
 import { useState } from "react";
 import "../App/App.css";
-import TodoApis from "../../helpers/commonApis/todoListApi.js";
+import useCreateApi from "../../hooks/useCreateApi";
 
-const TodoForm = ({ setTodos }) => {
+const TodoForm = ({ setTaskList }) => {
   const [value, setValue] = useState("");
+  const { createTask } = useCreateApi();
 
   const handleSubmitAdd = async (e) => {
     try {
       e.preventDefault();
       if (!value) return;
-      const res = await TodoApis.addNewTodo({
+      const res = await createTask("/todos/createTodo", {
         text: value,
         isCompleted: false,
       });
       const { data } = res.data;
-      setTodos([...data]);
+      setTaskList([...data] || []);
       setValue("");
     } catch (error) {
       console.log(error);
